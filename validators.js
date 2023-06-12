@@ -27,15 +27,16 @@ const userSchema = Joi.object({
     firstname: Joi.string().max(255).required(),
     lastname: Joi.string().max(255).required(),
     email: Joi.string().email().max(255).required(),
+    password: Joi.required(), //mettre du regex sur le password Or Download Joi password
     city: Joi.string().max(255).required(),
     language: Joi.string().max(255).required(),
 });
 
 const validateUser = (req, res, next) => {
-    const { firstname, lastname, email, city, language } = req.body;
+    const { firstname, lastname, email, city, language, password } = req.body;
 
     const { error } = userSchema.validate(
-        { firstname, lastname, email, city, language },
+        { firstname, lastname, email, city, language, password },
         { abortEarly: false }
     );
 

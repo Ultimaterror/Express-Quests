@@ -1,7 +1,7 @@
 const database = require("./database");
 
 const getUsers = (req, res) => {
-    const initialSql = "select * from users";
+    const initialSql = "select firstname, lastname, email, city, language from users";
     const where = [];
 
     if (req.query.language != null) {
@@ -42,7 +42,7 @@ const getUserById = (req, res) => {
     const id = parseInt(req.params.id);
 
     database
-        .query("select * from users where id = ?", [id])
+        .query("select firstname, lastname, email, city, language from users where id = ?", [id])
         .then(([users]) => {
             if (users[0] != null) {
                 res.status(200).json(users[0]);
@@ -58,12 +58,12 @@ const getUserById = (req, res) => {
 
 const postUser = (req, res) => {
     // res.send("Post route is working 🎉");
-    const { firstname, lastname, email, city, language } = req.body;
+    const { firstname, lastname, email, city, language, hashedPassword } = req.body;
 
     database
         .query(
-            "INSERT INTO users(firstname, lastname, email, city, language) VALUES (?, ?, ?, ?, ?)",
-            [firstname, lastname, email, city, language]
+            "INSERT INTO users(firstname, lastname, email, city, language, hashedPassword) VALUES (?, ?, ?, ?, ?, ?)",
+            [firstname, lastname, email, city, language, hashedPassword]
         )
         .then(([result]) => {
             res.location(`/api/users/${result.insertId}`).sendStatus(201);
@@ -76,13 +76,13 @@ const postUser = (req, res) => {
 
 const updateUser = (req, res) => {
     // res.send("Put route is working 🎉");
-    const { firstname, lastname, email, city, language } = req.body;
+    const { firstname, lastname, email, city, language, hashedPassword } = req.body;
     const id = parseInt(req.params.id);
 
     database
         .query(
-            "UPDATE users SET firstname = ?, lastname = ?, email = ?, city = ?, language = ? WHERE id = ?",
-            [firstname, lastname, email, city, language, id]
+            "UPDATE users SET firstname = ?, lastname = ?, email = ?, city = ?, language = ?, hashedPassword = ? WHERE id = ?",
+            [firstname, lastname, email, city, language, hashedPassword, id]
         )
         .then(([result]) => {
             if (result.affectedRows === 0) {

@@ -23,11 +23,12 @@ app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 
 const { validateUser } = require("./validators.js");
 const userHandlers = require("./userHandlers");
+const { hashPassword } = require("./auth.js");
 
 app.get("/api/users", userHandlers.getUsers);
 app.get("/api/users/:id", userHandlers.getUserById);
-app.post("/api/users", validateUser, userHandlers.postUser);
-app.put("/api/users/:id", validateUser, userHandlers.updateUser);
+app.post("/api/users", validateUser, hashPassword, userHandlers.postUser); // Modifier le validator pour le password
+app.put("/api/users/:id", validateUser, hashPassword, userHandlers.updateUser); // Modifier le validator pour le password
 app.delete("/api/users/:id", userHandlers.deleteUser);
 
 app.listen(port, (err) => {
